@@ -80,3 +80,23 @@ class MovingAverageCrossoverStrategy(Strategy):
         if self.__short > self.__long or self.__short < 0:
             raise ValueError("Improper periods lengths!")
         return True
+
+
+class AmazingStrategy(Strategy):
+
+
+    @beartype
+    def __init__(self):
+        super().__init__()
+
+    def generate_signal(self, data):
+        self._is_valid(data)
+        return -1
+
+    def slice_data(self, data, start, end):
+        return data.slice_data(start, end)
+
+    def _is_valid(self, data):
+        if len(data) > 0:
+            return True
+        raise ValueError("Series has to contain any observation!")
