@@ -15,6 +15,9 @@ class TimeSeries:
     def get_series(self):
         return self.__series
 
+    def slice_data(self, start, end):
+        return TimeSeries(self.__series[start:end])
+
     def __len__(self):
         return len(self.__series)
 
