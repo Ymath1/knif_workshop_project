@@ -1,5 +1,5 @@
 from beartype import beartype
-from knif_workshop_project.modules.data_handling import TimeSeries, MovingAverage
+from knif_workshop_project.modules.data_handling import MovingAverage
 
 
 class Strategy:
@@ -11,6 +11,9 @@ class Strategy:
         raise NotImplementedError("Method must be overridden in the derived class!")
 
     def slice_data(self, data, start, end):
+        raise NotImplementedError("Method must be overridden in the derived class!")
+
+    def representation(self):
         raise NotImplementedError("Method must be overridden in the derived class!")
 
     def _is_valid(self, data):
@@ -30,6 +33,9 @@ class BuyHoldStrategy(Strategy):
     def slice_data(self, data, start, end):
         return data
 
+    def representation(self):
+        return "BuyHold Strategy"
+
     def _is_valid(self, data):
         if len(data) > 0:
             return True
@@ -48,6 +54,9 @@ class ReversalStrategy(Strategy):
 
     def slice_data(self, data, start, end):
         return data.slice_data(start, end)
+
+    def representation(self):
+        return "Reversal Strategy"
 
     def _is_valid(self, data):
         if len(data) > 0:
@@ -74,29 +83,12 @@ class MovingAverageCrossoverStrategy(Strategy):
     def slice_data(self, data, start, end):
         return data.slice_data(start, end)
 
+    def representation(self):
+        return f"MA Crossover Long: {self.__long} Short: {self.__short}"
+
     def _is_valid(self, data):
         if len(data) < self.__long:
-            raise ValueError("Too long period!")
+            raise ValueError("Too short period!")
         if self.__short > self.__long or self.__short < 0:
             raise ValueError("Improper periods lengths!")
         return True
-
-
-class AmazingStrategy(Strategy):
-
-
-    @beartype
-    def __init__(self):
-        super().__init__()
-
-    def generate_signal(self, data):
-        self._is_valid(data)
-        return -1
-
-    def slice_data(self, data, start, end):
-        return data.slice_data(start, end)
-
-    def _is_valid(self, data):
-        if len(data) > 0:
-            return True
-        raise ValueError("Series has to contain any observation!")
